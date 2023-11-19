@@ -28,7 +28,10 @@ def preprocess(raw_data_dir,
     for dir in [preproc_dir, kspace_real_dir, kspace_imag_dir, recon_dir]:
         os.makedirs(dir, exist_ok=True)
     
-    for i, path in enumerate(raw_data_paths):
+    #for i, path in enumerate(raw_data_paths):
+    # skip 768 and 769
+    for i in range(770, len(raw_data_paths)):
+        path = raw_data_paths[i]
         print(f"PROCESSING FILE {i+1} of {len(raw_data_paths)}")
         
         # LOAD KSPACE DATA
