@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#pip install numpy
 export PYTHONPATH=/data/vision/polina/users/ramyamut/projects/mri_final_project/
 
 ## EXECUTION OF PYTHON CODE:

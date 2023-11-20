@@ -29,10 +29,10 @@ class ReconDataset(torch.utils.data.Dataset):
         kspace_imag = imageio.imread(self.kspace_imag_paths[idx]) / 255
         recon = imageio.imread(self.recon_paths[idx]) / 255
         
-        kspace_real_t = torch.tensor(kspace_real).float() * 2 - 1
-        kspace_imag_t = torch.tensor(kspace_imag).float() * 2 - 1
+        kspace_real_t = torch.tensor(kspace_real).float().unsqueeze(0) * 2 - 1
+        kspace_imag_t = torch.tensor(kspace_imag).float().unsqueeze(0) * 2 - 1
         kspace_t = torch.stack([kspace_real_t, kspace_imag_t], dim=0)
-        recon_t = torch.tensor(recon).float() * 2 - 1
+        recon_t = torch.tensor(recon).float().unsqueeze(0) * 2 - 1
 
         return {
             "kspace": kspace_t,

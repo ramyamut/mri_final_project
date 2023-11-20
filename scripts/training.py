@@ -24,6 +24,7 @@ parser.add_argument("--batchsize", type=int, dest="batchsize", default=1)
 # -------------------------------------------- UNet architecture parameters --------------------------------------------
 parser.add_argument("--hidden_channels", type=int, dest="hidden_channels", default=64)
 parser.add_argument("--num_layers", type=int, dest="num_layers", default=5)
+parser.add_argument("--layer_type", type=str, dest="layer_type", default="alternating")
 
 # ------------------------------------------------- Training parameters ------------------------------------------------
 

@@ -29,7 +29,6 @@ class ReconLightningModule(pl.LightningModule):
         self.batch_size = int(self.config["batch_size"])
         self.lr = float(self.config["lr"])
         self.weight_decay = float(self.config["weight_decay"])
-        self.thresh = float(self.config["thresh"])
     
     def configure_optimizers(self):
         return torch.optim.Adam(self.model.parameters(), lr=self.lr, weight_decay=self.weight_decay)
@@ -37,7 +36,7 @@ class ReconLightningModule(pl.LightningModule):
     def step(self, batch, stage):
         kspace = batch['kspace']
         recon = batch['recon']
-        preds = self.model(kspace)
+        preds = self.model(kspace, recon)
         loss = metrics.mse(recon, preds)
         output_dict = {
             'loss': loss.mean()
