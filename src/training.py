@@ -8,13 +8,15 @@ from src import networks, dataset, lightning
 
 def training(train_kspace_real_dir,
              train_kspace_imag_dir,
-             train_recon_dir,
+             train_recon_real_dir,
+             train_recon_imag_dir,
              val_kspace_real_dir,
              val_kspace_imag_dir,
-             val_recon_dir,
+             val_recon_real_dir,
+             val_recon_imag_dir,
              model_dir,
              batchsize=1,
-             hidden_channels=64,
+             hidden_channels=32,
              num_layers=5,
              layer_type='interleaved',
              lr=1e-4,
@@ -25,12 +27,14 @@ def training(train_kspace_real_dir,
     train_dataset = dataset.ReconDataset(
         kspace_real_dir=train_kspace_real_dir,
         kspace_imag_dir=train_kspace_imag_dir,
-        recon_dir=train_recon_dir
+        recon_real_dir=train_recon_real_dir,
+        recon_imag_dir=train_recon_imag_dir
     )
     val_dataset = dataset.ReconDataset(
         kspace_real_dir=val_kspace_real_dir,
         kspace_imag_dir=val_kspace_imag_dir,
-        recon_dir=val_recon_dir,
+        recon_real_dir=val_recon_real_dir,
+        recon_imag_dir=val_recon_imag_dir,
         eval_mode=True
     )
     datasets = {

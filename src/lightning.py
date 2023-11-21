@@ -34,9 +34,9 @@ class ReconLightningModule(pl.LightningModule):
         return torch.optim.Adam(self.model.parameters(), lr=self.lr, weight_decay=self.weight_decay)
     
     def step(self, batch, stage):
-        kspace = batch['kspace']
-        recon = batch['recon']
-        preds = self.model(kspace, recon)
+        kspace = batch['kspace'] # [B, 2, 1, H, W]
+        recon = batch['recon'] # [B, 2, 1, H, W]
+        preds = self.model(kspace, recon) # [B, 2, 1, H, W]
         loss = metrics.mse(recon, preds)
         output_dict = {
             'loss': loss.mean()
