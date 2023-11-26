@@ -7,6 +7,7 @@ import h5py
 import scipy.fft as fft
 
 from src.utils import crop_center, normalize_01
+from src import subsample
 
 def process(data_arr, raw_path, slice_idx, output_real_dir, output_imag_dir):
     data_arr = np.stack([data_arr.real, data_arr.imag], axis=0)
@@ -21,13 +22,21 @@ def process(data_arr, raw_path, slice_idx, output_real_dir, output_imag_dir):
 def preprocess(raw_data_dir,
              preproc_dir,
              final_size,
-             skip_recon=False):
+             skip_recon=False,
+             subsample=None,
+             subsample_factor=1):
     
     raw_data_paths = sorted(glob.glob(f"{raw_data_dir}/*.h5"))
     kspace_real_dir = os.path.join(preproc_dir, "kspace_real")
     kspace_imag_dir = os.path.join(preproc_dir, "kspace_imag")
     recon_real_dir = os.path.join(preproc_dir, "recon_real")
     recon_imag_dir = os.path.join(preproc_dir, "recon_imag")
+    
+    try:
+        subsample_method = subsample.__getattribute__(subsample)
+        subsample_fn = lambda x: subsample_method(x, subsample_factor)
+    except:
+        subsample_fn = lambda x: x
     
     for dir in [preproc_dir, kspace_real_dir, kspace_imag_dir, recon_real_dir, recon_imag_dir]:
         os.makedirs(dir, exist_ok=True)
@@ -48,6 +57,7 @@ def preprocess(raw_data_dir,
         # CREATE IMAGES FOR EACH SLICE AND SAVE
         for slice in range(len(kspace)):
             kspace_crop = crop_center(kspace[slice], final_size, final_size)
+            kspace_crop = subsample_fn(kspace_crop)
             process(kspace_crop, path, slice, kspace_real_dir, kspace_imag_dir)
             
             if not skip_recon:

@@ -1,6 +1,6 @@
 import numpy as np
 
-def subsample_columns(image, factor):
+def subsample_columns_equi(image, factor):
     """
     Subsample input image by taking every factor'th column.
     Set the remainder to 0.
@@ -21,7 +21,7 @@ def subsample_columns(image, factor):
     return subsampled_image
 
 
-def subsample_rows(image, factor):
+def subsample_rows_equi(image, factor):
     """
     Subsample the input image by taking every factor'th row.
     Set the remainder to 0.
@@ -36,6 +36,51 @@ def subsample_rows(image, factor):
     if factor <= image.shape[0] // 2:
         subsampled_image = np.zeros_like(image)
         subsampled_image[::factor, :] = image[::factor, :]
+    else:
+        print("error, factor chosen is too large")
+        subsampled_image = image.copy()  # Return a copy to avoid modifying the original
+    return subsampled_image
+
+def subsample_columns_random(image, factor):
+    """
+    Subsample input image by randomly sampling columns, reducing the number of samples by a specified factor
+    Set the remainder to 0.
+
+    Parameters:
+    - image: numpy array, input image with shape (height, width)
+    - factor: int, subsampling factor for columns
+
+    Returns:
+    - subsampled_image: numpy array, subsampled image
+    """
+    if factor <= image.shape[1] // 2:
+        subsampled_image = np.zeros_like(image)
+        num_samples = image.shape[1] // factor
+        random_idx = np.random.permutation(image.shape[1])[:num_samples]
+        subsampled_image[:, random_idx] = image[:, random_idx]
+    else:
+        print("error, factor chosen is too large")
+        subsampled_image = image.copy()  # Return a copy to avoid modifying the original
+    return subsampled_image
+
+
+def subsample_rows_random(image, factor):
+    """
+    Subsample input image by randomly sampling rows, reducing the number of samples by a specified factor
+    Set the remainder to 0.
+
+    Parameters:
+    - image: numpy array, input image with shape (height, width)
+    - factor: int, subsampling factor for rows
+
+    Returns:
+    - subsampled_image: numpy array, subsampled image
+    """
+    if factor <= image.shape[0] // 2:
+        subsampled_image = np.zeros_like(image)
+        num_samples = image.shape[0] // factor
+        random_idx = np.random.permutation(image.shape[0])[:num_samples]
+        subsampled_image[random_idx,:] = image[random_idx,:]
     else:
         print("error, factor chosen is too large")
         subsampled_image = image.copy()  # Return a copy to avoid modifying the original
