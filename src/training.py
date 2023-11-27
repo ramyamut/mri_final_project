@@ -6,15 +6,11 @@ import pytorch_lightning as pl
 # project imports
 from src import networks, dataset, lightning
 
-def training(train_kspace_real_dir,
-             train_kspace_imag_dir,
-             train_recon_real_dir,
-             train_recon_imag_dir,
-             val_kspace_real_dir,
-             val_kspace_imag_dir,
-             val_recon_real_dir,
-             val_recon_imag_dir,
+def training(train_kspace_dir,
+             val_kspace_dir,
              model_dir,
+             subsample_method=None,
+             subsample_factor=1,
              batchsize=1,
              hidden_channels=32,
              num_layers=5,
@@ -25,16 +21,14 @@ def training(train_kspace_real_dir,
              checkpoint=None):
     
     train_dataset = dataset.ReconDataset(
-        kspace_real_dir=train_kspace_real_dir,
-        kspace_imag_dir=train_kspace_imag_dir,
-        recon_real_dir=train_recon_real_dir,
-        recon_imag_dir=train_recon_imag_dir
+        kspace_dir=train_kspace_dir,
+        subsample_method=subsample_method,
+        subsample_factor=subsample_factor
     )
     val_dataset = dataset.ReconDataset(
-        kspace_real_dir=val_kspace_real_dir,
-        kspace_imag_dir=val_kspace_imag_dir,
-        recon_real_dir=val_recon_real_dir,
-        recon_imag_dir=val_recon_imag_dir,
+        kspace_dir=val_kspace_dir,
+        subsample_method=subsample_method,
+        subsample_factor=subsample_factor,
         eval_mode=True
     )
     datasets = {

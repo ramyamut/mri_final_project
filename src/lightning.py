@@ -35,8 +35,9 @@ class ReconLightningModule(pl.LightningModule):
     
     def step(self, batch, stage):
         kspace = batch['kspace'] # [B, 2, 1, H, W]
+        img = batch['img'] # [B, 2, 1, H, W]
         recon = batch['recon'] # [B, 2, 1, H, W]
-        preds = self.model(kspace, recon) # [B, 2, 1, H, W]
+        preds = self.model(kspace, img) # [B, 2, 1, H, W]
         loss = metrics.mse(recon, preds)
         output_dict = {
             'loss': loss.mean()

@@ -12,11 +12,8 @@ parser.add_argument("--preproc_dir", type=str, dest="preproc_dir", default=None)
 
 # PREPROCESSING PARAMETERS
 parser.add_argument("--final_size", type=int, dest="final_size", default=256)
-parser.add_argument("--subsample", type=str, dest="subsample", default=None)
-parser.add_argument("--subsample_factor", type=int, dest="subsample_factor", default=1)
 
 # OTHER
-parser.add_argument("--skip_recon", action='store_true', dest="skip_recon")
 
 # PRINT ALL ARGUMENTS
 print('\nScript name:',  sys.argv[0])

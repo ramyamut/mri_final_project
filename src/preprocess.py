@@ -6,44 +6,25 @@ import imageio
 import h5py
 import scipy.fft as fft
 
-from src.utils import crop_center, normalize_01
-from src import subsample
+from src.utils import crop_center
 
-def process(data_arr, raw_path, slice_idx, output_real_dir, output_imag_dir):
+def process(data_arr, raw_path, slice_idx, output_dir):
     data_arr = np.stack([data_arr.real, data_arr.imag], axis=0)
-    norm = normalize_01(data_arr)
     subj = os.path.basename(raw_path).split(".h5")[0]
-    output_real_path = os.path.join(output_real_dir, f"{subj}_slice_{slice_idx}.png")
-    output_imag_path = os.path.join(output_imag_dir, f"{subj}_slice_{slice_idx}.png")
-    final_img = (norm * 255).astype(np.uint8)
-    imageio.imwrite(output_real_path, final_img[0])
-    imageio.imwrite(output_imag_path, final_img[1])
+    output_path = os.path.join(output_dir, f"{subj}_slice_{slice_idx}.npy")
+    np.save(output_path, data_arr)
 
 def preprocess(raw_data_dir,
              preproc_dir,
-             final_size,
-             skip_recon=False,
-             subsample=None,
-             subsample_factor=1):
+             final_size):
     
     raw_data_paths = sorted(glob.glob(f"{raw_data_dir}/*.h5"))
-    kspace_real_dir = os.path.join(preproc_dir, "kspace_real")
-    kspace_imag_dir = os.path.join(preproc_dir, "kspace_imag")
-    recon_real_dir = os.path.join(preproc_dir, "recon_real")
-    recon_imag_dir = os.path.join(preproc_dir, "recon_imag")
+    kspace_dir = os.path.join(preproc_dir, "kspace")
     
-    try:
-        subsample_method = subsample.__getattribute__(subsample)
-        subsample_fn = lambda x: subsample_method(x, subsample_factor)
-    except:
-        subsample_fn = lambda x: x
-    
-    for dir in [preproc_dir, kspace_real_dir, kspace_imag_dir, recon_real_dir, recon_imag_dir]:
+    for dir in [preproc_dir, kspace_dir]:
         os.makedirs(dir, exist_ok=True)
     
     for i, path in enumerate(raw_data_paths):
-    # skip 768 and 769
-    #for i in range(770, len(raw_data_paths)):
         path = raw_data_paths[i]
         print(f"PROCESSING FILE {i+1} of {len(raw_data_paths)}")
         
@@ -57,9 +38,4 @@ def preprocess(raw_data_dir,
         # CREATE IMAGES FOR EACH SLICE AND SAVE
         for slice in range(len(kspace)):
             kspace_crop = crop_center(kspace[slice], final_size, final_size)
-            kspace_crop = subsample_fn(kspace_crop)
-            process(kspace_crop, path, slice, kspace_real_dir, kspace_imag_dir)
-            
-            if not skip_recon:
-                recon = fft.ifftshift(fft.ifft2(fft.fftshift(kspace_crop)))
-                process(recon, path, slice, recon_real_dir, recon_imag_dir)
+            process(kspace_crop, path, slice, kspace_dir)
