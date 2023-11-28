@@ -5,6 +5,7 @@ import imageio
 import glob
 import torch
 from scipy import fft
+from skimage.metrics import structural_similarity as ssim
 
 # project imports
 from src import networks, utils, subsample
@@ -50,6 +51,8 @@ def predict(k_space_dir,
         subsample_fn = lambda x: x
 
     path_kspace = sorted(glob.glob(f"{k_space_dir}/*npy*"))
+    
+    ssim_scores = []
     
     for i in range(len(path_kspace)):
         print(f'processing {i+1} of {len(path_kspace)}')
@@ -98,6 +101,10 @@ def predict(k_space_dir,
         final_img = (recon_proc * 255).astype(np.uint8)
         imageio.imwrite(output_path, final_img)
         
+        # calculate ssim score btw pred & ground truth
+        ssim_score = ssim(recon_proc, pred_proc, data_range=1.)
+        ssim_scores.append(ssim_score)
+        
         # save undersampled kspace
         output_path = os.path.join(kspace_folder, output_fname)
         kspace_proc = kspace_t.squeeze().detach().cpu()
@@ -106,3 +113,4 @@ def predict(k_space_dir,
         final_img = (kspace_proc * 255).astype(np.uint8)
         imageio.imwrite(output_path, final_img)
 
+    np.save(os.path.join(eval_folder, "ssim.npy"), ssim_scores)
