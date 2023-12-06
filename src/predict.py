@@ -78,7 +78,8 @@ def predict(k_space_dir,
         with torch.no_grad():
             pred = net(kspace_t.unsqueeze(0), img_t.unsqueeze(0)).squeeze().detach().cpu() #[2, H, W]
             pred_proc = (pred + 1)/2
-            pred_proc = abs(torch.complex(pred_proc[0], pred_proc[1])).numpy()
+            #pred_proc = abs(torch.complex(pred_proc[0], pred_proc[1])).numpy()
+            pred_proc = pred_proc[0].numpy()
         
             # save prediction
             output_path = os.path.join(pred_folder, output_fname)
@@ -89,7 +90,8 @@ def predict(k_space_dir,
         output_path = os.path.join(img_folder, output_fname)
         img_proc = img_t.squeeze().detach().cpu()
         img_proc = (img_proc + 1)/2
-        img_proc = abs(torch.complex(img_proc[0], img_proc[1])).numpy()
+        #img_proc = abs(torch.complex(img_proc[0], img_proc[1])).numpy()
+        img_proc = img_proc[0].numpy()
         final_img = (img_proc * 255).astype(np.uint8)
         imageio.imwrite(output_path, final_img)
         
@@ -97,7 +99,8 @@ def predict(k_space_dir,
         output_path = os.path.join(recon_folder, output_fname)
         recon_proc = recon_t.squeeze().detach().cpu()
         recon_proc = (recon_proc + 1)/2
-        recon_proc = abs(torch.complex(recon_proc[0], recon_proc[1])).numpy()
+        #recon_proc = abs(torch.complex(recon_proc[0], recon_proc[1])).numpy()
+        recon_proc = recon_proc[0].numpy()
         final_img = (recon_proc * 255).astype(np.uint8)
         imageio.imwrite(output_path, final_img)
         
@@ -109,7 +112,8 @@ def predict(k_space_dir,
         output_path = os.path.join(kspace_folder, output_fname)
         kspace_proc = kspace_t.squeeze().detach().cpu()
         kspace_proc = (kspace_proc + 1)/2
-        kspace_proc = abs(torch.complex(kspace_proc[0], kspace_proc[1])).numpy()
+        #kspace_proc = abs(torch.complex(kspace_proc[0], kspace_proc[1])).numpy()
+        kspace_proc = kspace_proc[0].numpy()
         final_img = (kspace_proc * 255).astype(np.uint8)
         imageio.imwrite(output_path, final_img)
 

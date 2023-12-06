@@ -7,7 +7,8 @@ export PYTHONPATH=/data/vision/polina/users/ramyamut/projects/mri_final_project/
 python /data/vision/polina/users/ramyamut/projects/mri_final_project/scripts/training.py \
   --train_kspace_dir /data/vision/polina/users/ramyamut/projects/mri_final_project/data/singlecoil_train/preproc/kspace \
   --val_kspace_dir /data/vision/polina/users/ramyamut/projects/mri_final_project/data/singlecoil_val/preproc/kspace \
+  --layer_type alternating \
   --subsample_method subsample_rows_random \
   --subsample_factor 2 \
-  --model_dir /data/vision/polina/users/ramyamut/projects/mri_final_project/models/interleaved_random_2 \
+  --model_dir /data/vision/polina/users/ramyamut/projects/mri_final_project/models/alternating_random_2 \
   --batchsize 2

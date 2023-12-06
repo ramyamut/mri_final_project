@@ -31,7 +31,7 @@ def preprocess(raw_data_dir,
         # LOAD KSPACE DATA
         try:
             data = h5py.File(path, 'r')["kspace"]
-            kspace = np.array(data)
+            kspace = np.array(data)[:,0]
         except:
             continue
         
